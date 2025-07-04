@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic Chatbot</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Agentic Chatbot</h1>
+        
+        <!-- Chat Interface -->
+        <div class="chat-container">
+            <div id="chat-messages" class="chat-messages">
+                <!-- Messages will be added here dynamically -->
+            </div>
+            
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Type your message..." autofocus>
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+        
+        <!-- File Upload Section -->
+        <div class="file-upload">
+            <h3>Upload Document</h3>
+            <input type="file" id="file-input" accept=".pdf,.docx,.txt,.md">
+            <button id="upload-button">Upload</button>
+        </div>
+    </div>
+
+    <script src="/static/js/chat.js"></script>
+</body>
+</html>
