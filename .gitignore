@@ -33,15 +33,21 @@ ENV/
 # Environment variables
 .env
 
-# Uploads
+# Local development
 uploads/
+*.faiss
+*.pkl
 
-# Cache
-.cache/
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.coverage.*
+coverage.xml
+*.cover
 
 # Logs
 *.log
 
-# Local development
-.DS_Store
-Thumbs.db
+# Model cache
+model_cache/

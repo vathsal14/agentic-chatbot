@@ -19,7 +19,7 @@ pandas==2.1.2
 beautifulsoup4==4.12.2
 
 # Vector Database
-faiss-cpu==1.7.4
+faiss-cpu>=1.11.0
 
 # Hugging Face
 huggingface-hub>=0.16.0

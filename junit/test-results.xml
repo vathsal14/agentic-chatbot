@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="3.663" timestamp="2025-07-07T16:55:29.148430+05:30" hostname="DESKTOP-MNS53RF"><testcase classname="tests.unit.test_base_agent.TestBaseAgent" name="test_message_handling" time="0.029"><failure message="TypeError: BaseAgent.send_message() missing 2 required positional arguments: 'message_type' and 'payload'">self = &lt;test_base_agent.TestBaseAgent object at 0x000001BE1A130B30&gt;
+test_agent = &lt;test_base_agent.TestBaseAgent.test_agent.&lt;locals&gt;.TestAgent object at 0x000001BE1A24FC80&gt;
+
+    @pytest.mark.asyncio
+    async def test_message_handling(self, test_agent):
+        """Test that messages are properly handled by the agent."""
+        # Create a test message
+        test_msg = MCPMessage(
+            sender="test_sender",
+            receiver="test_agent",
+            message_type="TEST_MESSAGE",
+            trace_id="test123",
+            payload={"test": "data"}
+        )
+    
+        # Send the message
+&gt;       response = await test_agent.send_message(test_msg)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: BaseAgent.send_message() missing 2 required positional arguments: 'message_type' and 'payload'
+
+tests\unit\test_base_agent.py:42: TypeError</failure></testcase><testcase classname="tests.unit.test_base_agent.TestBaseAgent" name="test_invalid_message_type" time="0.014"><failure message="TypeError: BaseAgent.send_message() missing 2 required positional arguments: 'message_type' and 'payload'">self = &lt;test_base_agent.TestBaseAgent object at 0x000001BE1A24F7A0&gt;
+test_agent = &lt;test_base_agent.TestBaseAgent.test_agent.&lt;locals&gt;.TestAgent object at 0x000001BE1A2996D0&gt;
+
+    @pytest.mark.asyncio
+    async def test_invalid_message_type(self, test_agent):
+        """Test handling of messages with no registered handler."""
+        invalid_msg = MCPMessage(
+            sender="test_sender",
+            receiver="test_agent",
+            message_type="INVALID_TYPE",
+            trace_id="test456",
+            payload={}
+        )
+    
+        # Should not raise an exception
+&gt;       response = await test_agent.send_message(invalid_msg)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: BaseAgent.send_message() missing 2 required positional arguments: 'message_type' and 'payload'
+
+tests\unit\test_base_agent.py:61: TypeError</failure></testcase></testsuite></testsuites>

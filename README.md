@@ -1,103 +1,165 @@
-# Agentic RAG Chatbot
+# Agentic RAG Chatbot with MCP
 
-A lightweight, local-first Retrieval-Augmented Generation (RAG) chatbot with an agent-based architecture using Model Context Protocol (MCP).
+An advanced Retrieval-Augmented Generation (RAG) chatbot featuring an agent-based architecture using Model Context Protocol (MCP) for seamless communication between components. This implementation uses FastAPI for the backend and includes a modular agent system for processing and responding to user queries.
 
-## Features
+## 🚀 Features
 
-- **Multi-format Document Support**: Upload and process PDF, DOCX, PPTX, CSV, and plain text files
-- **Local-First Architecture**: Runs entirely on your machine with local models
-- **Agent-Based Design**: Modular agents for ingestion, retrieval, and response generation
-- **Simple Web Interface**: Easy-to-use chat interface for interacting with your documents
-- **No External Dependencies**: No API keys or external services required
+- **Multi-format Document Support**: Process PDF, DOCX, PPTX, CSV, and TXT files
+- **Agent-Based Architecture**: Modular design with specialized agents for ingestion, retrieval, and response generation
+- **Model Context Protocol (MCP)**: Standardized communication protocol between agents
+- **Vector Search**: Semantic search capabilities using FAISS and sentence-transformers
+- **Web Interface**: Interactive UI for document uploads and chat
+- **Local-First**: Runs entirely on your machine with local models by default
+- **Asynchronous Processing**: Non-blocking operations for better performance
 
-## Architecture
+## 🏗️ Architecture
 
-The system is built using the following components:
+### Core Components
 
-1. **Agents**:
-   - **Ingestion Agent**: Processes and chunks uploaded documents
-   - **Retrieval Agent**: Handles semantic search using sentence-transformers
-   - **Response Agent**: Generates responses using local language models
-   - **Coordinator Agent**: Manages workflow between agents using MCP
+#### Agents
+- **`IngestionAgent`**: Processes and chunks uploaded documents, handles text extraction and splitting
+- **`RetrievalAgent`**: Performs semantic search using sentence-transformers and FAISS
+- **`ResponseAgent`**: Generates contextual responses using language models
+- **`CoordinatorAgent`**: Manages workflow and message routing between agents using MCP
 
-2. **Storage**:
-   - **In-Memory Vector Store**: Simple in-memory storage for document chunks and embeddings
-   - **File Storage**: Local file system for uploaded documents
+#### Storage
+- **FAISS Vector Store**: Efficient similarity search with `all-MiniLM-L6-v2` embeddings (384 dimensions)
+- **Local File System**: Stores uploaded documents in the `uploads/` directory
 
-3. **API**:
-   - FastAPI backend with RESTful endpoints
-   - Simple HTML/JavaScript frontend
+#### API Endpoints
+- `POST /api/upload`: Upload and process documents
+- `POST /api/chat`: Send chat messages and get responses
+- `GET /health`: Check service status
+- `POST /api/clear_kb`: Clear the knowledge base
 
-## Getting Started
+## 🛠️ Installation
 
 ### Prerequisites
-
-- Python 3.8+
+- Python 3.10+
 - pip (Python package manager)
-- Basic command line knowledge
+- Git
 
-### Installation
+### Setup
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/yourusername/agentic-chatbot.git
    cd agentic-chatbot
    ```
 
-2. Create and activate a virtual environment (recommended):
+2. Create and activate a virtual environment:
    ```bash
    python -m venv venv
-   # On Windows:
+   # Windows:
    venv\Scripts\activate
-   # On macOS/Linux:
+   # Unix/MacOS:
    source venv/bin/activate
    ```
 
-3. Install the required packages:
+3. Install dependencies:
    ```bash
-   pip install -r minimal_requirements.txt
+   pip install -r requirements.txt
+   ```
+   
+   > **Note**: The first run will download the `all-MiniLM-L6-v2` model (~80MB)
+
+4. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   The default configuration in `.env` is pre-configured for local development:
+   ```env
+   # Server
+   HOST=0.0.0.0
+   PORT=8000
+   DEBUG=true
+   
+   # Models
+   EMBEDDING_MODEL=all-MiniLM-L6-v2
+   LLM_MODEL=distilgpt2
+   
+   # Storage
+   UPLOAD_FOLDER=uploads
+   
+   # Optional: Set to "cuda" if you have a CUDA-compatible GPU
+   # DEVICE=cuda
    ```
 
-4. Start the server:
+## 🚀 Running the Application
+
+1. Start the FastAPI server with auto-reload for development:
    ```bash
-   python main.py
+   uvicorn main:app --reload
    ```
 
-5. Open your browser to http://localhost:8000
+2. Access the application:
+   - Web Interface: http://localhost:8000
+   - API Documentation: http://localhost:8000/docs
+   - Health Check: http://localhost:8000/health
 
-## Usage
+## 🖥️ Usage
 
 ### Uploading Documents
+1. **Using the Web Interface**:
+   - Navigate to http://localhost:8000
+   - Click "Upload Document"
+   - Select a file (PDF, DOCX, PPTX, CSV, or TXT)
+   - Wait for processing to complete
 
-1. Click the "Upload Document" button in the web interface
-2. Select a supported file (PDF, DOCX, PPTX, CSV, TXT)
-3. Wait for the upload and processing to complete
+2. **Using the API**:
+   ```bash
+   curl -X 'POST' \
+     'http://localhost:8000/api/upload' \
+     -H 'accept: application/json' \
+     -H 'Content-Type: multipart/form-data' \
+     -F 'file=@your_document.pdf;type=application/pdf'
+   ```
 
-### Asking Questions
+### Chat Interface
+1. **Web Interface**:
+   - Type your question in the input box
+   - Press Enter or click "Send"
+   - View the response with relevant document sources
 
-1. Type your question in the chat input
-2. Press Enter or click Send
-3. The system will search through your documents and generate a response
+2. **API Usage**:
+   ```bash
+   curl -X 'POST' \
+     'http://localhost:8000/api/chat' \
+     -H 'accept: application/json' \
+     -H 'Content-Type: application/json' \
+     -d '{
+       "message": "What is this document about?",
+       "conversation_id": "optional_conversation_id"
+     }'
+   ```
 
-## Configuration
+## ⚙️ Configuration
 
-Edit the `.env` file to configure the application:
+The application can be configured using environment variables in the `.env` file:
 
-```
+```env
 # Server Configuration
-HOST=0.0.0.0
-PORT=8000
-DEBUG=true
+HOST=0.0.0.0  # Bind address
+PORT=8000      # Port to run the server on
+DEBUG=true     # Enable debug mode (not recommended for production)
 
 # Model Configuration
-EMBEDDING_MODEL=all-MiniLM-L6-v2
-LLM_MODEL=distilgpt2
+EMBEDDING_MODEL=all-MiniLM-L6-v2  # Sentence transformer model for embeddings
+LLM_MODEL=distilgpt2              # Language model for response generation
 
-# File Storage
-UPLOAD_FOLDER=uploads
+# Storage Configuration
+UPLOAD_FOLDER=uploads  # Directory to store uploaded files
+
+# Hardware Configuration
+# DEVICE=cpu  # Set to "cuda" if you have a CUDA-compatible GPU
+
+# Logging
+LOG_LEVEL=INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+VECTOR_STORE_PATH=vector_store.faiss
 ```
 
-## Project Structure
+## 📂 Project Structure
 
 ```
 agentic-chatbot/
